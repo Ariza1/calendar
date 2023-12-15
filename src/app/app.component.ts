@@ -1,19 +1,20 @@
-import { Component, signal, ChangeDetectorRef } from '@angular/core';
+import { Component, signal, ChangeDetectorRef, OnInit } from '@angular/core';
 import { CalendarOptions, DateSelectArg, EventClickArg, EventApi } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { INITIAL_EVENTS, createEventId } from './event-utils';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import rrulePlugin from '@fullcalendar/rrule'
-import listPlugin from '@fullcalendar/list'
-import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
+import { MatDialog } from '@angular/material/dialog';
+import { AddTrabajadorComponent } from './components/add-trabajador/add-trabajador.component';
+import { Empleado } from './models/empleados.model';
+import { EmpleadosService } from './service/empleados.service';
+import { EMPLEADO } from './common/constants';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  calendarVisible = signal(true);
+export class AppComponent implements OnInit {
   calendarOptions = signal<CalendarOptions>({
     plugins: [
       interactionPlugin,
@@ -37,7 +38,7 @@ export class AppComponent {
         slotLabelFormat: {
           hour: 'numeric',
           minute: '2-digit',
-          hour12: true
+          hour12: false
         },
         allDaySlot: false,
         nowIndicator: true,
@@ -58,7 +59,7 @@ export class AppComponent {
     eventTimeFormat: {
       hour: '2-digit',
       minute: '2-digit',
-      hour12: true
+      hour12: false
     },
     locale: 'es',
     select: this.handleDateSelect.bind(this),
@@ -71,22 +72,40 @@ export class AppComponent {
     */
   });
   currentEvents = signal<EventApi[]>([]);
+  empleados = signal<Empleado[]>([]);
 
-  constructor(private changeDetector: ChangeDetectorRef) {
+  constructor(
+    private changeDetector: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private empleadoService: EmpleadosService
+  ) {
   }
 
-  handleCalendarToggle() {
-    this.calendarVisible.update((bool) => !bool);
+  ngOnInit(): void {
+    this.inicializarEmpleados()
   }
 
-  handleWeekendsToggle() {
-    this.calendarOptions.mutate((options) => {
-      options.weekends = !options.weekends;
-    });
+  inicializarEmpleados(): void {
+    let empleados = this.empleadoService.read(EMPLEADO);
+    if (empleados) {
+      let empleadosGuardados = JSON.parse(empleados);
+      empleadosGuardados.forEach((empleado: Empleado) => {
+        this.empleados.mutate(empleados => empleados.push(empleado))
+      });
+    } else {
+      this.empleadoService.create(EMPLEADO);
+    }
+
   }
+  // muestra o no los fines de semana
+  // handleWeekendsToggle() {
+  //   this.calendarOptions.mutate((options) => {
+  //     options.weekends = !options.weekends;
+  //   });
+  // }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Please enter a new title for your event');
+    const title = prompt('Please enter a new title for your event ' + new Date(selectInfo.startStr).getHours() + ':' + new Date(selectInfo.startStr).getMinutes());
     const calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); // clear date selection
@@ -97,15 +116,21 @@ export class AppComponent {
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
-        allDay: selectInfo.allDay
+        display: 'block',
+        borderColor: 'red',
+        backgroundColor: 'red',
+        // allDay: selectInfo.allDay
       });
     }
   }
 
-  prueba() {
-    let selectInfo: DateSelectArg;
-    // const calendarApi = selectInfo.view.calendar;
-    console.log(this.calendarOptions())
+  addEmpleado(): void {
+    const dialogRef = this.dialog.open(AddTrabajadorComponent);
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.empleados.mutate(empleados => empleados.push(result))
+      this.empleadoService.update(EMPLEADO, JSON.stringify(this.empleados()));
+    });
   }
 
   handleEventClick(clickInfo: EventClickArg) {

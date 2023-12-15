@@ -3,6 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AddTrabajadorComponent } from './components/add-trabajador/add-trabajador.component';
+import { MaterialModule } from './material.module';
 
 @NgModule({
   declarations: [
@@ -10,7 +13,9 @@ import { FullCalendarModule } from '@fullcalendar/angular';
   ],
   imports: [
     BrowserModule,
-    FullCalendarModule
+    FullCalendarModule,
+    BrowserAnimationsModule,
+    MaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]
