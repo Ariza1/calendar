@@ -9,6 +9,7 @@ import { AddTrabajadorComponent } from './components/add-trabajador/add-trabajad
 import { Empleado } from './models/empleados.model';
 import { EmpleadosService } from './service/empleados.service';
 import { EMPLEADO } from './common/constants';
+import { v4 as uuidv4 } from 'uuid';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -128,7 +129,13 @@ export class AppComponent implements OnInit {
     const dialogRef = this.dialog.open(AddTrabajadorComponent);
 
     dialogRef.afterClosed().subscribe((result: any) => {
-      this.empleados.mutate(empleados => empleados.push(result))
+      const empleado: Empleado= {
+        id: uuidv4(),
+        nombre: result.nombre,
+        color: result.color
+      }
+      result.id = uuidv4();
+      this.empleados.mutate(empleados => empleados.push(empleado))
       this.empleadoService.update(EMPLEADO, JSON.stringify(this.empleados()));
     });
   }

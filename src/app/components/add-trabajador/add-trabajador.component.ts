@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MaterialModule } from 'src/app/material.module';
 
 @Component({
@@ -17,8 +17,8 @@ export class AddTrabajadorComponent {
 
   constructor() {
     this.formEmpleado = this.fb.group({
-      nombre: [''],
-      color: ['']
+      nombre: ['', [Validators.required]],
+      color: ['', [Validators.required]]
     });
   }
 
