@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddTrabajadorComponent } from './components/add-trabajador/add-trabajador.component';
 import { Empleado } from './models/empleados.model';
 import { EmpleadosService } from './service/empleados.service';
-import { EMPLEADO, EVENTO } from './common/constants';
+import { EMPLEADO, EVENTO, INDEX } from './common/constants';
 import { v4 as uuidv4 } from 'uuid';
 import { AddEventoComponent } from './components/add-evento/add-evento.component';
 @Component({
@@ -76,6 +76,7 @@ export class AppComponent implements OnInit {
   currentEvents = signal<EventApi[]>([]);
   empleados = signal<Empleado[]>([]);
   eventos = signal<EventInput[]>([]);
+  indice = signal<number>(1);
 
 
   constructor(
@@ -88,6 +89,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.inicializarEmpleados()
     this.inicializarEventos()
+    this.inicializarContador()
   }
 
   inicializarEmpleados(): void {
@@ -98,7 +100,7 @@ export class AppComponent implements OnInit {
         this.empleados.mutate(empleados => empleados.push(empleado))
       });
     } else {
-      this.storageService.create(EMPLEADO);
+      this.storageService.create(EMPLEADO, []);
     }
   }
 
@@ -106,13 +108,18 @@ export class AppComponent implements OnInit {
     let eventos = this.storageService.read(EVENTO);
     if (eventos) {
       let eventosGuardados = JSON.parse(eventos);
-      eventosGuardados.forEach((evento: any) => {
-        this.eventos.mutate(eventos => eventos.push(
-          evento
-        ))
-      });
+      eventosGuardados.forEach((evento: any) => this.eventos.mutate(eventos => eventos.push(evento)));
     } else {
-      this.storageService.create(EVENTO);
+      this.storageService.create(EVENTO, []);
+    }
+  }
+
+  inicializarContador(): void {
+    let indice = this.storageService.read(INDEX);
+    if (indice) {
+      this.indice.set(JSON.parse(indice));
+    } else {
+      this.storageService.create(INDEX, 1);
     }
   }
   // muestra o no los fines de semana
@@ -135,7 +142,7 @@ export class AppComponent implements OnInit {
       if (result) {
         let empleado: Empleado = this.filtrarEmpleado(this.empleados(), result.empleado);
         calendarApi.addEvent({
-          id: createEventId(),
+          id: this.indice().toString(),
           title: empleado.nombre,
           start: selectInfo.startStr,
           end: selectInfo.endStr,
@@ -196,7 +203,9 @@ export class AppComponent implements OnInit {
     evento.backgroundColor = event.event.backgroundColor;
     evento.id = event.event.id;
     this.eventos.mutate(e=> e.push(evento));
+    this.indice.set(parseInt(event.event.id)+1);
     this.changeDetector.detectChanges();
+    this.storageService.update(INDEX, this.indice().toString());
     this.storageService.update(EVENTO, JSON.stringify(this.eventos()));
   };
 }

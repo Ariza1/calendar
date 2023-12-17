@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class EmpleadosService {
 
-  create(name: string) {
-    localStorage.setItem(name, '');
+  create(name: string, value: any) {
+    localStorage.setItem(name, value);
   }
 
   read(name: string) {
