@@ -10,6 +10,7 @@ import { Empleado } from './models/empleados.model';
 import { EmpleadosService } from './service/empleados.service';
 import { EMPLEADO } from './common/constants';
 import { v4 as uuidv4 } from 'uuid';
+import { AddEventoComponent } from './components/add-evento/add-evento.component';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -106,7 +107,13 @@ export class AppComponent implements OnInit {
   // }
 
   handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Please enter a new title for your event ' + new Date(selectInfo.startStr).getHours() + ':' + new Date(selectInfo.startStr).getMinutes());
+    const dialogRef = this.dialog.open(AddEventoComponent, {
+      data: {
+        empleados: this.empleados(),
+        fecha:selectInfo
+      }
+    });
+    const title = 'hola' //  prompt('Please enter a new title for your event ' + new Date(selectInfo.startStr).getHours() + ':' + new Date(selectInfo.startStr).getMinutes());
     const calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); // clear date selection

@@ -6,6 +6,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatListModule} from '@angular/material/list';
 import {MatIconModule} from '@angular/material/icon';
 import {MatCardModule} from '@angular/material/card';
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import {MatCardModule} from '@angular/material/card';
     MatInputModule,
     MatListModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatSelectModule
   ],
   exports: [
     MatDialogModule,
@@ -25,7 +27,8 @@ import {MatCardModule} from '@angular/material/card';
     MatInputModule,
     MatListModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatSelectModule
   ],
   providers: [],
 })

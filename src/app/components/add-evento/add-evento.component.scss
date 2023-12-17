@@ -1,0 +1,10 @@
+h1{
+  font-size: large;
+}
+form{
+  display: flex;
+  justify-content: center;
+  mat-form-field{
+    width: 50%;
+  }
+}
