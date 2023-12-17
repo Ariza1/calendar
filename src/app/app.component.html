@@ -19,8 +19,8 @@
   </div>
 
   <div class='demo-app-main'>
-    <full-calendar [options]='calendarOptions()'>
-      <ng-template #eventContent let-arg>
+    <full-calendar [options]='calendarOptions()' [events]="eventos()">
+      <ng-template let-arg>
         <b>{{ arg.timeText }}</b>
         <i>{{ arg.event.title }}</i>
       </ng-template>
