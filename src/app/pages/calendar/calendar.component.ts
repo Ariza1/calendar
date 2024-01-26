@@ -4,12 +4,10 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { MatDialog } from '@angular/material/dialog';
-import { v4 as uuidv4 } from 'uuid';
 import { Empleado } from 'src/app/models/empleados.model';
 import { EmpleadosService } from 'src/app/service/empleados.service';
-import { EMPLEADO, EVENTO, INDEX } from 'src/app/common/constants';
+import { EVENTO, INDEX } from 'src/app/common/constants';
 import { AddEventoComponent } from '../../components/add-evento/add-evento.component';
-import { AddTrabajadorComponent } from '../../components/add-trabajador/add-trabajador.component';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -76,7 +74,6 @@ export class CalendarComponent implements OnInit{
   eventos = signal<EventInput[]>([]);
   indice = signal<number>(1);
 
-
   constructor(
     private changeDetector: ChangeDetectorRef,
     private dialog: MatDialog,
@@ -122,32 +119,25 @@ export class CalendarComponent implements OnInit{
   // }
 
   addEvent(selectInfo: DateSelectArg) {
-    // const calendarApi = selectInfo.view.calendar;
-    // const dialogRef = this.dialog.open(AddEventoComponent, {
-    //   data: {
-    //     empleados: this.empleados(),
-    //     fecha: selectInfo
-    //   }
-    // });
-    // calendarApi.unselect();
-    // dialogRef.afterClosed().subscribe((result: any) => {
-    //   if (result) {
-    //     let empleado: Empleado = this.filtrarEmpleado(this.empleados(), result.empleado);
-    //     calendarApi.addEvent({
-    //       id: this.indice().toString(),
-    //       title: empleado.nombre,
-    //       start: selectInfo.startStr,
-    //       end: selectInfo.endStr,
-    //       resourceId: empleado.id
-    //     });
-    //   }
-    // });
+    const calendarApi = selectInfo.view.calendar;
+    const dialogRef = this.dialog.open(AddEventoComponent, {
+      data: {
+        fecha: selectInfo
+      }
+    });
+    calendarApi.unselect();
+    dialogRef.afterClosed().subscribe((result: Empleado) => {
+      if (result) {
+        calendarApi.addEvent({
+          id: this.indice().toString(),
+          title: result.nombre,
+          start: selectInfo.startStr,
+          end: selectInfo.endStr,
+          resourceId: result.id
+        });
+      }
+    });
   }
-
-  filtrarEmpleado(empleados: Empleado[], id: string): Empleado {
-    return empleados.filter((empleado: Empleado) => empleado.id === id)[0];
-  }
-
 
   handleEventClick(clickInfo: EventClickArg) {
     if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
@@ -172,6 +162,7 @@ export class CalendarComponent implements OnInit{
     this.changeDetector.detectChanges();
     this.storageService.update(EVENTO, JSON.stringify(this.eventos()));
   }
+
   saveEvents(event: EventAddArg) {
     let evento: EventInput = {} as EventInput;
     evento.title = event.event.title;

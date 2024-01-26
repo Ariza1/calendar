@@ -6,12 +6,12 @@
       <mat-label>Empleado</mat-label>
       <mat-select formControlName="empleado">
         <mat-option disabled>Seleccione un empleado</mat-option>
-        <mat-option *ngFor="let item of data.empleados" [value]="item.id">{{item.nombre}}</mat-option>
+        <mat-option *ngFor="let item of empleados()" [value]="item.id">{{item.nombre}}</mat-option>
       </mat-select>
     </mat-form-field>
   </form>
 </div>
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancelar</button>
-  <button mat-raised-button color="primary" [mat-dialog-close]="formEvento.value" cdkFocusInitial [disabled]="formEvento.invalid">Ok</button>
+  <button mat-raised-button color="primary" (click)="guardarEvento()" [disabled]="formEvento.invalid">Ok</button>
 </div>
