@@ -130,8 +130,10 @@ export class CalendarComponent implements OnInit {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+    if (confirm(`Estas seguro de eliminar el evento de: ${clickInfo.event.title}?`)) {
+      let currentEvents = this.eventos().filter((evento: EventInput) => evento.id !== clickInfo.event.id);
       clickInfo.event.remove();
+      this.storageService.update(EVENTO, JSON.stringify(currentEvents));
     }
   }
 
