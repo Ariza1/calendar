@@ -30,7 +30,6 @@ export class CalendarComponent implements OnInit{
     views: {
       week: {
         type: 'timeGridWeek',
-        duration: { days: 7 },
         buttonText: 'Semana',
         slotMaxTime: '22:00:00',
         slotMinTime: '06:00:00',
@@ -44,6 +43,7 @@ export class CalendarComponent implements OnInit{
         nowIndicator: true,
       }
     },
+    firstDay: 1,
     allDayText: 'Todo el día',
     initialView: 'week',
     initialEvents: [], // alternatively, use the `events` setting to fetch from a feed
