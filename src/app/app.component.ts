@@ -1,211 +1,335 @@
-import { Component, signal, ChangeDetectorRef, OnInit } from '@angular/core';
-import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, EventAddArg } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import { createEventId } from './event-utils';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import { MatDialog } from '@angular/material/dialog';
-import { AddTrabajadorComponent } from './components/add-trabajador/add-trabajador.component';
-import { Empleado } from './models/empleados.model';
-import { EmpleadosService } from './service/empleados.service';
-import { EMPLEADO, EVENTO, INDEX } from './common/constants';
-import { v4 as uuidv4 } from 'uuid';
-import { AddEventoComponent } from './components/add-evento/add-evento.component';
+import { Component } from '@angular/core';
+
+
+const DATA = [
+  {
+    "title": "maria carmen",
+    "start": "2023-12-16T06:30:00-05:00",
+    "end": "2023-12-16T13:30:00-05:00",
+    "backgroundColor": "#df1111",
+    "id": "1"
+  },
+  {
+    "title": "maria carmen",
+    "start": "2023-12-17T06:30:00-05:00",
+    "end": "2023-12-17T13:30:00-05:00",
+    "backgroundColor": "#df1111",
+    "id": "2"
+  },
+  {
+    "title": "maria carmen",
+    "start": "2023-12-18T06:30:00-05:00",
+    "end": "2023-12-18T13:30:00-05:00",
+    "backgroundColor": "#df1111",
+    "id": "3"
+  },
+  {
+    "title": "maria carmen",
+    "start": "2023-12-19T06:30:00-05:00",
+    "end": "2023-12-19T13:30:00-05:00",
+    "backgroundColor": "#df1111",
+    "id": "4"
+  },
+  {
+    "title": "maria carmen",
+    "start": "2023-12-20T06:30:00-05:00",
+    "end": "2023-12-20T13:30:00-05:00",
+    "backgroundColor": "#df1111",
+    "id": "5"
+  },
+  {
+    "title": "maria carmen",
+    "start": "2023-12-21T06:30:00-05:00",
+    "end": "2023-12-21T13:30:00-05:00",
+    "backgroundColor": "#df1111",
+    "id": "6"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-18T17:00:00-05:00",
+    "end": "2023-12-18T22:00:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "7"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-20T08:30:00-05:00",
+    "end": "2023-12-20T12:30:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "8"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-20T18:00:00-05:00",
+    "end": "2023-12-20T22:00:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "9"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-21T09:00:00-05:00",
+    "end": "2023-12-21T13:30:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "10"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-21T18:00:00-05:00",
+    "end": "2023-12-21T21:30:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "11"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-22T17:30:00-05:00",
+    "end": "2023-12-22T22:00:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "12"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-16T09:00:00-05:00",
+    "end": "2023-12-16T13:30:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "13"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-16T17:00:00-05:00",
+    "end": "2023-12-16T21:00:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "14"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-17T18:30:00-05:00",
+    "end": "2023-12-17T22:00:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "15"
+  },
+  {
+    "title": "mohcine",
+    "start": "2023-12-17T09:00:00-05:00",
+    "end": "2023-12-17T13:30:00-05:00",
+    "backgroundColor": "#d214a9",
+    "id": "16"
+  },
+  {
+    "title": "maria",
+    "start": "2023-12-18T07:00:00-05:00",
+    "end": "2023-12-18T13:00:00-05:00",
+    "backgroundColor": "#1509b3",
+    "id": "17"
+  },
+  {
+    "title": "maria",
+    "start": "2023-12-19T07:00:00-05:00",
+    "end": "2023-12-19T13:00:00-05:00",
+    "backgroundColor": "#1509b3",
+    "id": "18"
+  },
+  {
+    "title": "maria",
+    "start": "2023-12-20T07:00:00-05:00",
+    "end": "2023-12-20T13:00:00-05:00",
+    "backgroundColor": "#1509b3",
+    "id": "19"
+  },
+  {
+    "title": "maria",
+    "start": "2023-12-21T07:00:00-05:00",
+    "end": "2023-12-21T13:00:00-05:00",
+    "backgroundColor": "#1509b3",
+    "id": "20"
+  },
+  {
+    "title": "maria",
+    "start": "2023-12-22T07:00:00-05:00",
+    "end": "2023-12-22T13:00:00-05:00",
+    "backgroundColor": "#1509b3",
+    "id": "21"
+  },
+  {
+    "title": "alex",
+    "start": "2023-12-18T18:00:00-05:00",
+    "end": "2023-12-18T20:00:00-05:00",
+    "backgroundColor": "#09be48",
+    "id": "22"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-18T09:30:00-05:00",
+    "end": "2023-12-18T12:30:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "23"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-18T17:00:00-05:00",
+    "end": "2023-12-18T22:00:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "24"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-19T17:00:00-05:00",
+    "end": "2023-12-19T22:00:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "25"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-19T09:30:00-05:00",
+    "end": "2023-12-19T12:30:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "26"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-21T17:00:00-05:00",
+    "end": "2023-12-21T22:00:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "27"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-22T17:00:00-05:00",
+    "end": "2023-12-22T22:00:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "28"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-22T06:30:00-05:00",
+    "end": "2023-12-22T13:30:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "29"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-16T08:30:00-05:00",
+    "end": "2023-12-16T13:00:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "30"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-16T17:00:00-05:00",
+    "end": "2023-12-16T22:00:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "31"
+  },
+  {
+    "title": "Jorge",
+    "start": "2023-12-17T08:00:00-05:00",
+    "end": "2023-12-17T13:00:00-05:00",
+    "backgroundColor": "#0893af",
+    "id": "32"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-19T16:00:00-05:00",
+    "end": "2023-12-19T21:00:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "33"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-20T17:00:00-05:00",
+    "end": "2023-12-20T21:00:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "34"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-21T17:00:00-05:00",
+    "end": "2023-12-21T21:00:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "35"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-22T09:00:00-05:00",
+    "end": "2023-12-22T12:00:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "36"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-22T17:00:00-05:00",
+    "end": "2023-12-22T20:30:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "37"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-16T07:30:00-05:00",
+    "end": "2023-12-16T11:30:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "38"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-17T07:30:00-05:00",
+    "end": "2023-12-17T12:00:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "39"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-16T18:00:00-05:00",
+    "end": "2023-12-16T21:00:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "40"
+  },
+  {
+    "title": "carla",
+    "start": "2023-12-17T18:00:00-05:00",
+    "end": "2023-12-17T21:00:00-05:00",
+    "backgroundColor": "#63d408",
+    "id": "41"
+  },
+  {
+    "title": "lina",
+    "start": "2023-12-19T17:00:00-05:00",
+    "end": "2023-12-19T22:00:00-05:00",
+    "backgroundColor": "#e1da0e",
+    "id": "42"
+  },
+  {
+    "title": "lina",
+    "start": "2023-12-20T18:00:00-05:00",
+    "end": "2023-12-20T22:00:00-05:00",
+    "backgroundColor": "#e1da0e",
+    "id": "43"
+  },
+  {
+    "title": "lina",
+    "start": "2023-12-21T08:00:00-05:00",
+    "end": "2023-12-21T12:00:00-05:00",
+    "backgroundColor": "#e1da0e",
+    "id": "44"
+  },
+  {
+    "title": "lina",
+    "start": "2023-12-21T18:00:00-05:00",
+    "end": "2023-12-21T22:00:00-05:00",
+    "backgroundColor": "#e1da0e",
+    "id": "45"
+  },
+  {
+    "title": "lina",
+    "start": "2023-12-16T18:00:00-05:00",
+    "end": "2023-12-16T22:00:00-05:00",
+    "backgroundColor": "#e1da0e",
+    "id": "46"
+  }
+]
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  calendarOptions = signal<CalendarOptions>({
-    plugins: [
-      interactionPlugin,
-      dayGridPlugin,
-      timeGridPlugin,
-      // rrulePlugin,
-      // listPlugin
-    ],
-    headerToolbar: {
-      left: 'prev,next today',
-      center: 'title',
-      right: 'dayGridMonth,week,dayGridDay',
-    },
-    views: {
-      week: {
-        type: 'timeGridWeek',
-        duration: { days: 7 },
-        buttonText: 'Semana',
-        slotMaxTime: '22:00:00',
-        slotMinTime: '06:00:00',
-        timeHint: '03:00:00',
-        slotLabelFormat: {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: false
-        },
-        allDaySlot: false,
-        nowIndicator: true,
-      }
-    },
-    allDayText: 'Todo el día',
-    initialView: 'week',
-    initialEvents: [], // alternatively, use the `events` setting to fetch from a feed
-    editable: true,
-    selectable: true,
-    selectMirror: true,
-    displayEventTime: true,
-    displayEventEnd: true,
-    height: 650,
-    eventTimeFormat: {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    },
-    locale: 'es',
-    select: this.addEvent.bind(this),
-    eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this),
-    eventAdd: this.saveEvents.bind(this),
-    eventChange: this.updateEvents.bind(this),
-    /* you can update a remote database when these fire:
-    eventAdd:
-    eventChange:
-    eventRemove:
-    */
-  });
-  currentEvents = signal<EventApi[]>([]);
-  empleados = signal<Empleado[]>([]);
-  eventos = signal<EventInput[]>([]);
-  indice = signal<number>(1);
+export class AppComponent {
 
-
-  constructor(
-    private changeDetector: ChangeDetectorRef,
-    private dialog: MatDialog,
-    private storageService: EmpleadosService
-  ) {
-  }
-
-  ngOnInit(): void {
-    this.inicializarEmpleados()
-    this.inicializarEventos()
-    this.inicializarContador()
-  }
-
-  inicializarEmpleados(): void {
-    let empleados = this.storageService.read(EMPLEADO);
-    if (empleados) {
-      let empleadosGuardados = JSON.parse(empleados);
-      empleadosGuardados.forEach((empleado: Empleado) => {
-        this.empleados.mutate(empleados => empleados.push(empleado))
-      });
-    } else {
-      this.storageService.create(EMPLEADO, []);
-    }
-  }
-
-  inicializarEventos(): void {
-    let eventos = this.storageService.read(EVENTO);
-    if (eventos) {
-      let eventosGuardados = JSON.parse(eventos);
-      eventosGuardados.forEach((evento: any) => this.eventos.mutate(eventos => eventos.push(evento)));
-    } else {
-      this.storageService.create(EVENTO, []);
-    }
-  }
-
-  inicializarContador(): void {
-    let indice = this.storageService.read(INDEX);
-    if (indice) {
-      this.indice.set(JSON.parse(indice));
-    } else {
-      this.storageService.create(INDEX, 1);
-    }
-  }
-  // muestra o no los fines de semana
-  // handleWeekendsToggle() {
-  //   this.calendarOptions.mutate((options) => {
-  //     options.weekends = !options.weekends;
-  //   });
-  // }
-
-  addEvent(selectInfo: DateSelectArg) {
-    const calendarApi = selectInfo.view.calendar;
-    const dialogRef = this.dialog.open(AddEventoComponent, {
-      data: {
-        empleados: this.empleados(),
-        fecha: selectInfo
-      }
-    });
-    calendarApi.unselect();
-    dialogRef.afterClosed().subscribe((result: any) => {
-      if (result) {
-        let empleado: Empleado = this.filtrarEmpleado(this.empleados(), result.empleado);
-        calendarApi.addEvent({
-          id: this.indice().toString(),
-          title: empleado.nombre,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-          backgroundColor: empleado.color,
-          resourceId: empleado.id
-        });
-      }
-    });
-  }
-
-  filtrarEmpleado(empleados: Empleado[], id: string): Empleado {
-    return empleados.filter((empleado: Empleado) => empleado.id === id)[0];
-  }
-
-  addEmpleado(): void {
-    const dialogRef = this.dialog.open(AddTrabajadorComponent);
-
-    dialogRef.afterClosed().subscribe((result: any) => {
-      const empleado: Empleado= {
-        id: uuidv4(),
-        nombre: result.nombre,
-        color: result.color
-      }
-      result.id = uuidv4();
-      this.empleados.mutate(empleados => empleados.push(empleado))
-      this.storageService.update(EMPLEADO, JSON.stringify(this.empleados()));
-    });
-  }
-
-  handleEventClick(clickInfo: EventClickArg) {
-    if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-      clickInfo.event.remove();
-    }
-  }
-
-  handleEvents(events: EventApi[]) {
-    this.currentEvents.set(events);
-    this.changeDetector.detectChanges(); // workaround for pressionChangedAfterItHasBeenCheckedError
-  }
-
-  updateEvents(event: EventAddArg) {
-    this.eventos.mutate(e => {
-      e.forEach((evento: EventInput) => {
-        if (evento.id === event.event.id) {
-          evento.start = event.event.startStr;
-          evento.end = event.event.endStr;
-        }
-      })
-    });
-    this.changeDetector.detectChanges();
-    this.storageService.update(EVENTO, JSON.stringify(this.eventos()));
-  }
-  saveEvents(event: EventAddArg) {
-    let evento: EventInput = {} as EventInput;
-    evento.title = event.event.title;
-    evento.start = event.event.startStr;
-    evento.end = event.event.endStr;
-    evento.backgroundColor = event.event.backgroundColor;
-    evento.id = event.event.id;
-    this.eventos.mutate(e=> e.push(evento));
-    this.indice.set(parseInt(event.event.id)+1);
-    this.changeDetector.detectChanges();
-    this.storageService.update(INDEX, this.indice().toString());
-    this.storageService.update(EVENTO, JSON.stringify(this.eventos()));
-  };
 }

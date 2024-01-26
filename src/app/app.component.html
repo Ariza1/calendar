@@ -1,30 +1,10 @@
-<div class='demo-app'>
-
-  <div class='demo-app-sidebar'>
-    <div class='demo-app-sidebar-section'>
-
-      <h2>Número de empleados ({{empleados().length}})</h2>
-      <mat-list>
-        <div mat-subheader>Empleados</div>
-        <mat-list-item *ngFor="let folder of empleados()" class="usuario">
-          <mat-icon matListItemIcon>person</mat-icon>
-          <div matListItemTitle>{{folder.nombre}}</div>
-          <div matListItemLine [ngStyle]="{'background-color': folder.color}" class="color-content">{{folder.color }}
-          </div>
-        </mat-list-item>
-        <div class="content-btn-add"><button (click)="addEmpleado()" mat-raised-button color="primary">Agregar empleado</button></div>
-      </mat-list>
-
-    </div>
-  </div>
-
-  <div class='demo-app-main'>
-    <full-calendar [options]='calendarOptions()' [events]="eventos()">
-      <ng-template let-arg>
-        <b>{{ arg.timeText }}</b>
-        <i>{{ arg.event.title }}</i>
-      </ng-template>
-    </full-calendar>
-  </div>
-
-</div>
+<mat-toolbar color="primary">
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <a class="item-nav-menu" routerLink="/home" routerLinkActive="router-link-active" >My Calendar</a>
+  <span class="example-spacer"></span>
+  <a class="item-nav-menu" routerLink="/empleados" routerLinkActive="router-link-active" >Empleados</a>
+  <a class="item-nav-menu" routerLink="/cargos" routerLinkActive="router-link-active" >Cargos</a>
+</mat-toolbar>
+<router-outlet></router-outlet>

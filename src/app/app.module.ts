@@ -4,19 +4,21 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AddTrabajadorComponent } from './components/add-trabajador/add-trabajador.component';
 import { MaterialModule } from './material.module';
-import { AddEventoComponent } from './components/add-evento/add-evento.component';
+import { AppRoutingModule } from './app-routing.module';
+import { CalendarComponent } from './pages/calendar/calendar.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CalendarComponent
   ],
   imports: [
     BrowserModule,
     FullCalendarModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

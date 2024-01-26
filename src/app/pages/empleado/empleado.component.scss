@@ -1,0 +1,27 @@
+#main-table-cargos{
+  width: 100%;
+  .mat-elevation-z8, .content-filter{
+    margin: 0px 10px;
+  }
+  .content-filter{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .mat-form-field{
+      width: 100%;
+    }
+  }
+}
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td, th {
+  width: 25%;
+}

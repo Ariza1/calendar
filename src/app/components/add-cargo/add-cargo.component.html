@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Agregar nuevo cargo</h1>
+<div mat-dialog-content>
+<form [formGroup]="formCargo">
+    <mat-form-field>
+      <mat-label>Nombre del cargo</mat-label>
+      <input matInput formControlName="nombre">
+    </mat-form-field>
+
+    <mat-form-field floatLabel="always">
+      <mat-label>Valor hora</mat-label>
+      <input matInput type="number" formControlName="valorHora" class="example-right-align" placeholder="0">
+      <span matTextPrefix>$&nbsp;</span>
+      <span matTextSuffix>.00</span>
+    </mat-form-field>
+</form>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancelar</button>
+  <button mat-raised-button color="primary" [mat-dialog-close]="formCargo.value" [disabled]="formCargo.invalid">Ok</button>
+</div>

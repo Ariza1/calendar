@@ -1,0 +1,13 @@
+<div id="main-table-cargos">
+  <div class="content-filter">
+    <mat-form-field>
+      <mat-label>Filter</mat-label>
+      <input matInput placeholder="Buscar" #input>
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="addAndEditCargo()">Agregar nuevo cargo</button>
+  </div>
+
+  <div class="mat-elevation-z8">
+   <app-table *ngIf="showTable" [filtro]="input.value" [data]="cargos()" [columns]="columnsCargo" (editar)="addAndEditCargo($event)" (eliminar)="eliminarCargo($event)"></app-table>
+  </div>
+</div>

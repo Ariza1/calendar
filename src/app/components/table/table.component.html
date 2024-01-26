@@ -1,0 +1,23 @@
+<table mat-table [dataSource]="dataSource" matSort>
+
+  <ng-container *ngFor="let disCol of displayedColumns; let colIndex = index" matColumnDef="{{disCol}}">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{disCol === 'id' ? '' : disCol}} </th>
+    <td mat-cell *matCellDef="let row">
+      <span *ngIf="disCol != 'id'">{{row[disCol]}}</span>
+      <div *ngIf="disCol === 'id'" id="content-actions">
+        <img src="assets/images/icons/lapiz.png" alt="editar" (click)="editar.emit(row)">
+        <img src="assets/images/icons/borrar.png" alt="borrar" (click)="eliminar.emit(row)">
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+  <!-- Row shown when there is no matching data. -->
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="4">No data matching the filter"</td>
+  </tr>
+</table>
+
+<mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" aria-label="Select page of users"></mat-paginator>
