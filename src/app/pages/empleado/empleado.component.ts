@@ -6,7 +6,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
-import { EMPLEADO } from 'src/app/common/constants';
+import { EMPLEADO, EVENTO } from 'src/app/common/constants';
+import { getEmpleadosConTotales, getTotalHourPerPerson } from 'src/app/common/utils';
 import { AddTrabajadorComponent } from 'src/app/components/add-trabajador/add-trabajador.component';
 import { TableComponent } from 'src/app/components/table/table.component';
 import { MaterialModule } from 'src/app/material.module';
@@ -21,11 +22,11 @@ import { v4 as uuidv4 } from 'uuid';
   standalone: true,
   imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MaterialModule, TableComponent, CommonModule],
 })
-export class EmpleadoComponent implements OnInit{
+export class EmpleadoComponent implements OnInit {
 
   showTable: boolean = true;
   empleados = signal<Empleado[]>([]);
-  columnsCargo: string[] = ['nombre', 'nombreCargo', 'valorHora', 'id'];
+  columnsCargo: string[] = ['nombre', 'nombreCargo', 'valorHora', 'totalHoras', 'totalValor', 'id'];
   constructor(
     private dialog: MatDialog,
     private storageService: EmpleadosService
@@ -33,16 +34,21 @@ export class EmpleadoComponent implements OnInit{
   }
 
   ngOnInit(): void {
-   this.inicializarEmpleados();
+    this.inicializarEmpleados();
   }
 
   inicializarEmpleados(): void {
     let empleados = this.storageService.read(EMPLEADO);
+    let eventos = this.storageService.read(EVENTO);
     if (empleados) {
       let empleadosGuardados = JSON.parse(empleados);
-      empleadosGuardados.forEach((empleado: Empleado) => {
-        this.empleados.mutate(empleados => empleados.push(empleado))
-      });
+      if (eventos) {
+        let eventosGuardados = JSON.parse(eventos);
+        const horasPorPersona = getTotalHourPerPerson(eventosGuardados, empleadosGuardados)
+        getEmpleadosConTotales(empleadosGuardados, horasPorPersona).forEach((empleado: Empleado) => this.empleados.mutate(empleados => empleados.push(empleado)));
+      } else {
+        empleadosGuardados.forEach((empleado: Empleado) => this.empleados.mutate(empleados => empleados.push(empleado)));
+      }
     } else {
       this.storageService.create(EMPLEADO, []);
     }
@@ -64,7 +70,9 @@ export class EmpleadoComponent implements OnInit{
         nombre: result.nombre,
         nombreCargo: result.cargo.nombre,
         idCargo: result.cargo.id,
-        valorHora: result.cargo.valorHora
+        valorHora: result.cargo.valorHora,
+        totalHoras: 0,
+        totalValor: 0
       }
       if (empleado) {
         this.empleados.mutate(car => {

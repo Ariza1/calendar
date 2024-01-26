@@ -8,6 +8,8 @@ export interface Empleado extends Omit<FormEmpleado, 'cargo'>{
   valorHora: number;
   nombreCargo: string;
   idCargo: string;
+  totalHoras: number;
+  totalValor: number;
 }
 export interface Evento {
   id: string;

@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
-import { CalendarOptions, DateSelectArg, EventClickArg, EventApi, EventInput, EventAddArg } from '@fullcalendar/core';
+import { CalendarOptions, DateSelectArg, EventClickArg, EventInput, EventAddArg } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -8,12 +8,13 @@ import { Empleado } from 'src/app/models/empleados.model';
 import { EmpleadosService } from 'src/app/service/empleados.service';
 import { EVENTO, INDEX } from 'src/app/common/constants';
 import { AddEventoComponent } from '../../components/add-evento/add-evento.component';
+import { startOfWeek, isBefore } from 'date-fns';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit{
+export class CalendarComponent implements OnInit {
   calendarOptions = signal<CalendarOptions>({
     plugins: [
       interactionPlugin,
@@ -23,7 +24,7 @@ export class CalendarComponent implements OnInit{
       // listPlugin
     ],
     headerToolbar: {
-      left: 'prev,next today',
+      left: '',
       center: 'title',
       right: 'dayGridMonth,week,dayGridDay',
     },
@@ -52,7 +53,7 @@ export class CalendarComponent implements OnInit{
     selectMirror: true,
     displayEventTime: true,
     displayEventEnd: true,
-    height: 650,
+    height: 750,
     eventTimeFormat: {
       hour: '2-digit',
       minute: '2-digit',
@@ -61,7 +62,7 @@ export class CalendarComponent implements OnInit{
     locale: 'es',
     select: this.addEvent.bind(this),
     eventClick: this.handleEventClick.bind(this),
-    eventsSet: this.handleEvents.bind(this),
+    // eventsSet: this.handleEvents.bind(this),
     eventAdd: this.saveEvents.bind(this),
     eventChange: this.updateEvents.bind(this),
     /* you can update a remote database when these fire:
@@ -70,7 +71,6 @@ export class CalendarComponent implements OnInit{
     eventRemove:
     */
   });
-  currentEvents = signal<EventApi[]>([]);
   eventos = signal<EventInput[]>([]);
   indice = signal<number>(1);
 
@@ -84,20 +84,16 @@ export class CalendarComponent implements OnInit{
   ngOnInit(): void {
     this.inicializarEventos()
     this.inicializarContador()
-
-    // let red = DATA.reduce((acc: any, curr: any) => {
-    //   acc[curr.title] = acc[curr.title] ? acc[curr.title] + differenceInHours(new Date(curr.end), new Date(curr.start)) : differenceInHours(new Date(curr.end), new Date(curr.start));
-    //   return acc;
-    // },{});
-    // console.log(red)
-    // differenceInHours(new Date(acc[curr.title].end), new Date(acc[curr.title].start))
+    this.getFistDayOfWeek()
   }
 
   inicializarEventos(): void {
     let eventos = this.storageService.read(EVENTO);
     if (eventos) {
-      let eventosGuardados = JSON.parse(eventos);
-      eventosGuardados.forEach((evento: any) => this.eventos.mutate(eventos => eventos.push(evento)));
+      let eventosGuardados: EventInput[] = JSON.parse(eventos);
+      let currentEvents = eventosGuardados.filter((evento: EventInput) => !isBefore(new Date(evento.start as string), this.getFistDayOfWeek()));
+      currentEvents.forEach((evento: any) => this.eventos.mutate(eventos => eventos.push(evento)));
+      this.storageService.update(EVENTO, JSON.stringify(this.eventos()));
     } else {
       this.storageService.create(EVENTO, []);
     }
@@ -111,12 +107,6 @@ export class CalendarComponent implements OnInit{
       this.storageService.create(INDEX, 1);
     }
   }
-  // muestra o no los fines de semana
-  // handleWeekendsToggle() {
-  //   this.calendarOptions.mutate((options) => {
-  //     options.weekends = !options.weekends;
-  //   });
-  // }
 
   addEvent(selectInfo: DateSelectArg) {
     const calendarApi = selectInfo.view.calendar;
@@ -145,9 +135,8 @@ export class CalendarComponent implements OnInit{
     }
   }
 
-  handleEvents(events: EventApi[]) {
-    this.currentEvents.set(events);
-    this.changeDetector.detectChanges(); // workaround for pressionChangedAfterItHasBeenCheckedError
+  getFistDayOfWeek(): Date {
+    return startOfWeek(new Date(), { weekStartsOn: 1 });
   }
 
   updateEvents(event: EventAddArg) {
@@ -168,7 +157,6 @@ export class CalendarComponent implements OnInit{
     evento.title = event.event.title;
     evento.start = event.event.startStr;
     evento.end = event.event.endStr;
-    evento.backgroundColor = event.event.backgroundColor;
     evento.id = event.event.id;
     this.eventos.mutate(e => e.push(evento));
     this.indice.set(parseInt(event.event.id) + 1);
