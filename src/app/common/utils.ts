@@ -1,4 +1,4 @@
-import { differenceInHours } from "date-fns";
+import { differenceInHours, startOfWeek } from "date-fns";
 import { Empleado } from "../models/empleados.model";
 
 export function getTotalHourPerPerson(eventosGuardados: any[], empleados: any[]) {
@@ -30,4 +30,8 @@ export function getEmpleadosConTotales(empleados: Empleado[], horasPorPersona: a
       totalValor: horasPorPersona[empleado.nombre] * empleado.valorHora
     }
   });
+}
+
+export function getFistDayOfWeek(): Date {
+  return startOfWeek(new Date(), { weekStartsOn: 1 });
 }

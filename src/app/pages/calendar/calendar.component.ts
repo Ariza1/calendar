@@ -8,7 +8,8 @@ import { Empleado } from 'src/app/models/empleados.model';
 import { EmpleadosService } from 'src/app/service/empleados.service';
 import { EVENTO, INDEX } from 'src/app/common/constants';
 import { AddEventoComponent } from '../../components/add-evento/add-evento.component';
-import { startOfWeek, isBefore } from 'date-fns';
+import { isBefore } from 'date-fns';
+import { getFistDayOfWeek } from 'src/app/common/utils';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
@@ -84,14 +85,13 @@ export class CalendarComponent implements OnInit {
   ngOnInit(): void {
     this.inicializarEventos()
     this.inicializarContador()
-    this.getFistDayOfWeek()
   }
 
   inicializarEventos(): void {
     let eventos = this.storageService.read(EVENTO);
     if (eventos) {
       let eventosGuardados: EventInput[] = JSON.parse(eventos);
-      let currentEvents = eventosGuardados.filter((evento: EventInput) => !isBefore(new Date(evento.start as string), this.getFistDayOfWeek()));
+      let currentEvents = eventosGuardados.filter((evento: EventInput) => !isBefore(new Date(evento.start as string), getFistDayOfWeek()));
       currentEvents.forEach((evento: any) => this.eventos.mutate(eventos => eventos.push(evento)));
       this.storageService.update(EVENTO, JSON.stringify(this.eventos()));
     } else {
@@ -135,10 +135,6 @@ export class CalendarComponent implements OnInit {
       clickInfo.event.remove();
       this.storageService.update(EVENTO, JSON.stringify(currentEvents));
     }
-  }
-
-  getFistDayOfWeek(): Date {
-    return startOfWeek(new Date(), { weekStartsOn: 1 });
   }
 
   updateEvents(event: EventAddArg) {
