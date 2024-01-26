@@ -1,5 +1,7 @@
-import { differenceInHours, startOfWeek } from "date-fns";
-import { Empleado } from "../models/empleados.model";
+import { differenceInHours, parseISO, startOfWeek } from "date-fns";
+import { DiaHorasLaborales, Empleado } from "../models/empleados.model";
+import { EventInput } from "@fullcalendar/core";
+import { DIAS } from "./constants";
 
 export function getTotalHourPerPerson(eventosGuardados: any[], empleados: any[]) {
   const nombres = getNames([...empleados]);
@@ -34,4 +36,19 @@ export function getEmpleadosConTotales(empleados: Empleado[], horasPorPersona: a
 
 export function getFistDayOfWeek(): Date {
   return startOfWeek(new Date(), { weekStartsOn: 1 });
+}
+
+export function getDiasLaboralesPorPersona(eventos: EventInput[], empleado: string): DiaHorasLaborales[] {
+  return eventos
+    .filter((evento: EventInput) => evento.title === empleado)
+    .map((evento: EventInput) => {
+      let inicio = parseISO(evento.start as string)
+      let fin = parseISO(evento.end as string)
+      return {
+        id: inicio.getDay(),
+        dia: DIAS[inicio.getDay()],
+        start: `${inicio.getHours().toString().padStart(2, '0')}:${inicio.getMinutes().toString().padEnd(2, '0')}`,
+        end: `${fin.getHours().toString().padStart(2, '0')}:${fin.getMinutes().toString().padEnd(2, '0')}`,
+      }
+    }).sort((a, b) => a.id - b.id)
 }

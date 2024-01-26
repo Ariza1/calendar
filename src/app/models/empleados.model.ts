@@ -4,7 +4,7 @@ export interface FormEmpleado {
   cargo: Cargo;
 }
 
-export interface Empleado extends Omit<FormEmpleado, 'cargo'>{
+export interface Empleado extends Omit<FormEmpleado, 'cargo'> {
   valorHora: number;
   nombreCargo: string;
   idCargo: string;
@@ -30,4 +30,10 @@ export interface CargoDialogData {
 export interface EmpleadoDialogData {
   empleado: Empleado;
   title: string;
+}
+export interface DiaHorasLaborales {
+  id: number;
+  dia: string;
+  start: string;
+  end: string;
 }
