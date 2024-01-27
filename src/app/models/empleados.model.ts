@@ -1,3 +1,5 @@
+import { ex } from "@fullcalendar/core/internal-common";
+
 export interface FormEmpleado {
   id: string;
   nombre: string;
@@ -22,7 +24,6 @@ export interface Cargo {
   nombre: string;
   valorHora: number;
 }
-
 export interface CargoDialogData {
   cargo: Cargo;
   title: string;
@@ -31,9 +32,12 @@ export interface EmpleadoDialogData {
   empleado: Empleado;
   title: string;
 }
+
+export interface EmpleadoBottomSheetData extends Pick<EmpleadoDialogData, 'empleado'> {}
 export interface DiaHorasLaborales {
   id: number;
   dia: string;
   start: string;
   end: string;
+  horas: number;
 }
