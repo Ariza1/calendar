@@ -7,7 +7,7 @@
       <div *ngIf="disCol === 'id'" id="content-actions">
         <img src="assets/images/icons/lapiz.png" alt="editar" (click)="editar.emit(row)">
         <img src="assets/images/icons/borrar.png" alt="borrar" (click)="eliminar.emit(row)">
-        <img src="assets/images/icons/ver_documento.png" alt="borrar" (click)="ver.emit(row)">
+        <img *ngIf="showVer" src="assets/images/icons/ver_documento.png" alt="borrar" (click)="ver.emit(row)">
       </div>
     </td>
   </ng-container>
