@@ -49,6 +49,7 @@ export function getDiasLaboralesPorPersona(eventos: EventInput[], empleado: stri
         dia: DIAS[inicio.getDay()],
         start: `${inicio.getHours().toString().padStart(2, '0')}:${inicio.getMinutes().toString().padEnd(2, '0')}`,
         end: `${fin.getHours().toString().padStart(2, '0')}:${fin.getMinutes().toString().padEnd(2, '0')}`,
+        horas: differenceInHours(new Date(fin), new Date(inicio))
       }
     })
 }
@@ -61,6 +62,7 @@ export function verdiasFaltantes(dias: DiaHorasLaborales[]) {
       dia: dia,
       start: '00:00',
       end: '00:00',
+      horas: 0
     }
   })
 }
