@@ -17,6 +17,7 @@ export class TableComponent {
 
   @Output() editar: EventEmitter<any> = new EventEmitter();
   @Output() eliminar: EventEmitter<any> = new EventEmitter();
+  @Output() ver: EventEmitter<any> = new EventEmitter();
 
   @Input() set data(data: any) {
     this.dataSource = new MatTableDataSource(data);
