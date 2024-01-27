@@ -8,6 +8,6 @@
   </div>
 
   <div class="mat-elevation-z8">
-   <app-table *ngIf="showTable" [filtro]="input.value" [data]="empleados()" [columns]="columnsCargo" (editar)="addAndEditEmpleado($event)" (eliminar)="eliminarEmpleado($event)"></app-table>
+   <app-table *ngIf="showTable" [filtro]="input.value" [data]="empleados()" [columns]="columnsCargo" (editar)="addAndEditEmpleado($event)" (eliminar)="eliminarEmpleado($event)" (ver)="verEmpleado($event)"></app-table>
   </div>
 </div>

@@ -14,13 +14,17 @@ import { MaterialModule } from 'src/app/material.module';
 import { Empleado, FormEmpleado } from 'src/app/models/empleados.model';
 import { EmpleadosService } from 'src/app/service/empleados.service';
 import { v4 as uuidv4 } from 'uuid';
-
+import {
+  MatBottomSheet,
+  MatBottomSheetModule
+} from '@angular/material/bottom-sheet';
+import { VerEmpleadoComponent } from 'src/app/components/ver-empleado/ver-empleado.component';
 @Component({
   selector: 'app-empleado',
   templateUrl: './empleado.component.html',
   styleUrls: ['./empleado.component.scss'],
   standalone: true,
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MaterialModule, TableComponent, CommonModule],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MaterialModule, TableComponent, CommonModule, MatBottomSheetModule],
 })
 export class EmpleadoComponent implements OnInit {
 
@@ -29,7 +33,8 @@ export class EmpleadoComponent implements OnInit {
   columnsCargo: string[] = ['nombre', 'nombreCargo', 'valorHora', 'totalHoras', 'totalValor', 'id'];
   constructor(
     private dialog: MatDialog,
-    private storageService: EmpleadosService
+    private storageService: EmpleadosService,
+    private _bottomSheet: MatBottomSheet
   ) {
   }
 
@@ -83,6 +88,14 @@ export class EmpleadoComponent implements OnInit {
         this.empleados.mutate(car => car.push(empleadoDto))
       }
       this.loadTable();
+    });
+  }
+
+  verEmpleado($event: Empleado) {
+    this._bottomSheet.open(VerEmpleadoComponent, {
+      data: {
+        empleado: $event
+      }
     });
   }
 
