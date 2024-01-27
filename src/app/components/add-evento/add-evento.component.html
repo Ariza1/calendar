@@ -1,15 +1,20 @@
 <h1 mat-dialog-title>¿Desea agregar el evento el día <strong>{{getDate(data.fecha.startStr)}}</strong> desde las <strong>{{getHora(data.fecha.startStr)}}</strong> hasta las <strong>{{getHora(data.fecha.endStr)}}</strong>?</h1>
 <div mat-dialog-content>
-  <h5>Acontinuación elija un empleado al que le asignara el evento.</h5>
-  <form [formGroup]="formEvento">
-    <mat-form-field *ngIf="data">
-      <mat-label>Empleado</mat-label>
-      <mat-select formControlName="empleado">
-        <mat-option disabled>Seleccione un empleado</mat-option>
-        <mat-option *ngFor="let item of empleados()" [value]="item.id">{{item.nombre}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </form>
+  <div *ngIf="empleados().length > 0; else message">
+    <h5>Acontinuación elija un empleado al que le asignara el evento.</h5>
+    <form [formGroup]="formEvento">
+      <mat-form-field *ngIf="data">
+        <mat-label>Empleado</mat-label>
+        <mat-select formControlName="empleado">
+          <mat-option disabled>Seleccione un empleado</mat-option>
+          <mat-option *ngFor="let item of empleados()" [value]="item.id">{{item.nombre}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+  </div>
+  <ng-template #message>
+    <span>Recuerde agregar un <strong>empleado</strong> antes de intentar agregar un evento.</span>
+  </ng-template>
 </div>
 <div mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Cancelar</button>

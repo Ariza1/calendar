@@ -57,7 +57,7 @@ export class AddTrabajadorComponent implements OnInit {
     const { nombre, cargo } = this.formEmpleado.value;
     const cargoSelected = [...this.cargos()].filter((c: Cargo) => c.id === cargo)[0];
     let empleado: FormEmpleado = {
-      id: this.data.empleado.id,
+      id: this.data.empleado ? this.data.empleado.id : '',
       nombre,
       cargo: cargoSelected
     }
