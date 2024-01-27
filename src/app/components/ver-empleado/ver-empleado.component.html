@@ -1,0 +1,15 @@
+<h2>{{data.empleado.nombre}}</h2>
+<h4>{{data.empleado.nombreCargo}}</h4>
+<div class="card-content">
+  <div class="card work" *ngFor="let item of dias()">
+    <div class="img-section">
+    </div>
+    <div class="card-desc">
+      <div class="card-header">
+        <div class="card-title">{{item.dia}}</div>
+      </div>
+      <div class="card-time">{{item.start === '00:00' &&  item.end === '00:00' ? 'LIBRE' : item.horas > 1 ? item.horas +'hrs' : item.horas+'hr'}}</div>
+      <p class="recent">{{item.start}} - {{item.end}}</p>
+    </div>
+  </div>
+</div>
