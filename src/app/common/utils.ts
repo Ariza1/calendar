@@ -50,5 +50,17 @@ export function getDiasLaboralesPorPersona(eventos: EventInput[], empleado: stri
         start: `${inicio.getHours().toString().padStart(2, '0')}:${inicio.getMinutes().toString().padEnd(2, '0')}`,
         end: `${fin.getHours().toString().padStart(2, '0')}:${fin.getMinutes().toString().padEnd(2, '0')}`,
       }
-    }).sort((a, b) => a.id - b.id)
+    })
+}
+
+export function verdiasFaltantes(dias: DiaHorasLaborales[]) {
+  return DIAS.filter((dia: string) => !dias.some(x => x.dia === dia))
+  .map((dia: string) => {
+    return {
+      id: DIAS.indexOf(dia),
+      dia: dia,
+      start: '00:00',
+      end: '00:00',
+    }
+  })
 }
